@@ -39,38 +39,3 @@ if __name__ == "__main__":
 
     assert apply_packed(f, data_args) == 3
     assert apply_packed(f, data_kwargs) == 3
-
-    #####
-
-    def packed_args(f: Callable) -> Callable:
-        def new_f(arg: Sequence):
-            return f(*arg)
-
-        return new_f
-
-    def packed_kwargs(f: Callable) -> Callable:
-        def new_f(kwargs: Mapping):
-            return f(**kwargs)
-
-        return new_f
-
-    def pssb_packed(f: Callable) -> Callable:
-        def new_f(*args, **kwargs):
-            if len(args) == 1 and len(kwargs) == 0:
-                return apply_packed(f, args[0])
-
-            return f(*args, **kwargs)
-
-        return new_f
-
-    assert pssb_packed(f)(*data_args) == 3
-    assert pssb_packed(f)(data_args) == 3
-    assert pssb_packed(f)(**data_kwargs) == 3
-    assert pssb_packed(f)(data_kwargs) == 3
-
-    @dispatch
-    def apply_packed(f: Callable, *args, **kwargs) -> Any:
-        return f(*args, **kwargs)
-
-    assert apply_packed(f, *data_args) == 3
-    assert apply_packed(f, **data_kwargs) == 3
