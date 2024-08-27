@@ -8,7 +8,7 @@ include = ["unpacking"]
 
 [project]
 name = "unpacking"
-version = "2024.0.1"
+version = "2024.0.3"
 description = "Unpacking or destructuring arguments in Python"
 authors = [
     {name = "Chih-chan Tien", email = "chihchan.tien@gmail.com"},
