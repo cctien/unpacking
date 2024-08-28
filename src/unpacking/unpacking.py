@@ -14,12 +14,12 @@ def apply_packed(fnct: Callable, squn: Sequence) -> Any:
 
 
 @dispatch
-def apply_packed(fnct: Callable, tbl_assc: Mapping) -> Any:
+def apply_packed(fnct: Callable, tbl_assc: Mapping | Any) -> Any:
     return fnct(**tbl_assc)
 
 
 def packed(fnct: Callable) -> Callable:
-    def fnct_packed(to_be_unpacked: Sequence | Mapping) -> Any:
+    def fnct_packed(to_be_unpacked: Sequence | Mapping | Any) -> Any:
         return apply_packed(fnct, to_be_unpacked)
 
     return fnct_packed
@@ -31,12 +31,12 @@ def apply_packed_filtered(fnct: Callable, squn: Sequence) -> Any:
 
 
 @dispatch
-def apply_packed_filtered(fnct: Callable, tbl_assc: Mapping) -> Any:
+def apply_packed_filtered(fnct: Callable, tbl_assc: Mapping | Any) -> Any:
     return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), tbl_assc))
 
 
 def packedpart(fnct: Callable) -> Callable:
-    def fnct_packed(to_be_unpacked: Sequence | Mapping) -> Any:
+    def fnct_packed(to_be_unpacked: Sequence | Mapping | Any) -> Any:
         return apply_packed_filtered(fnct, to_be_unpacked)
 
     return fnct_packed
