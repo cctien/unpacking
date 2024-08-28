@@ -1,5 +1,6 @@
 from collections.abc import Callable, Iterable, Mapping, Iterable
 from inspect import signature
+from itertools import islice
 from operator import contains
 from typing import Any
 
@@ -9,13 +10,13 @@ from toolz import keyfilter
 
 
 @dispatch
-def apply_packed(fnct: Callable, squn: Iterable) -> Any:
-    return fnct(*squn)
+def apply_packed(fnct: Callable, itrb: Iterable) -> Any:
+    return fnct(*itrb)
 
 
 @dispatch
-def apply_packed(fnct: Callable, tbl_assc: Mapping) -> Any:
-    return fnct(**tbl_assc)
+def apply_packed(fnct: Callable, assctbl: Mapping) -> Any:
+    return fnct(**assctbl)
 
 
 def packed(fnct: Callable) -> Callable:
@@ -26,32 +27,32 @@ def packed(fnct: Callable) -> Callable:
 
 
 def packedmapping(fnct: Callable) -> Callable:
-    def fnct_packed(tbl_assc: Mapping) -> Any:
-        return fnct(**tbl_assc)
+    def fnct_packed(assctbl: Mapping) -> Any:
+        return fnct(**assctbl)
 
     return fnct_packed
 
 
 @dispatch
-def apply_packed_filtered(fnct: Callable, squn: Iterable) -> Any:
-    return fnct(*squn[: len(signature(fnct).parameters)])
+def apply_packed_part(fnct: Callable, itrb: Iterable) -> Any:
+    return fnct(*islice(itrb, len(signature(fnct).parameters)))
 
 
 @dispatch
-def apply_packed_filtered(fnct: Callable, tbl_assc: Mapping) -> Any:
-    return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), tbl_assc))
+def apply_packed_part(fnct: Callable, assctbl: Mapping) -> Any:
+    return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), assctbl))
 
 
 def packedpart(fnct: Callable) -> Callable:
     def fnct_packed(to_be_unpacked: Iterable | Mapping) -> Any:
-        return apply_packed_filtered(fnct, to_be_unpacked)
+        return apply_packed_part(fnct, to_be_unpacked)
 
     return fnct_packed
 
 
 def packedmappingpart(fnct: Callable) -> Callable:
-    def fnct_packed(tbl_assc: Mapping) -> Any:
-        return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), tbl_assc))
+    def fnct_packed(assctbl: Mapping) -> Any:
+        return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), assctbl))
 
     return fnct_packed
 
@@ -72,7 +73,7 @@ if __name__ == "__main__":
 
     data_args_excess = [1, 2, 3]
     data_kwargs_excess = {"x": 1, "y": 2, "z": 3}
-    assert apply_packed_filtered(test_fnct_add, data_args_excess) == 3
+    assert apply_packed_part(test_fnct_add, data_args_excess) == 3
     assert packedpart(test_fnct_add)(data_args_excess) == 3
-    assert apply_packed_filtered(test_fnct_add, data_kwargs_excess) == 3
+    assert apply_packed_part(test_fnct_add, data_kwargs_excess) == 3
     assert packedpart(test_fnct_add)(data_kwargs_excess) == 3
