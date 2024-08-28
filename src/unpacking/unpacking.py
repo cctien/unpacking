@@ -1,4 +1,4 @@
-from collections.abc import Callable, Iterable, Mapping, Iterable
+from collections.abc import Callable, Iterable, Mapping
 from inspect import signature
 from itertools import islice
 from operator import contains
