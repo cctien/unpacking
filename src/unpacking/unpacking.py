@@ -1,4 +1,4 @@
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Iterable
 from inspect import signature
 from operator import contains
 from typing import Any
@@ -9,35 +9,49 @@ from toolz import keyfilter
 
 
 @dispatch
-def apply_packed(fnct: Callable, squn: Sequence) -> Any:
+def apply_packed(fnct: Callable, squn: Iterable) -> Any:
     return fnct(*squn)
 
 
 @dispatch
-def apply_packed(fnct: Callable, tbl_assc: Mapping | Iterable) -> Any:
+def apply_packed(fnct: Callable, tbl_assc: Mapping) -> Any:
     return fnct(**tbl_assc)
 
 
 def packed(fnct: Callable) -> Callable:
-    def fnct_packed(to_be_unpacked: Sequence | Mapping | Iterable) -> Any:
+    def fnct_packed(to_be_unpacked: Iterable | Mapping) -> Any:
         return apply_packed(fnct, to_be_unpacked)
 
     return fnct_packed
 
 
+def packedmapping(fnct: Callable) -> Callable:
+    def fnct_packed(tbl_assc: Mapping) -> Any:
+        return fnct(**tbl_assc)
+
+    return fnct_packed
+
+
 @dispatch
-def apply_packed_filtered(fnct: Callable, squn: Sequence) -> Any:
+def apply_packed_filtered(fnct: Callable, squn: Iterable) -> Any:
     return fnct(*squn[: len(signature(fnct).parameters)])
 
 
 @dispatch
-def apply_packed_filtered(fnct: Callable, tbl_assc: Mapping | Iterable) -> Any:
+def apply_packed_filtered(fnct: Callable, tbl_assc: Mapping) -> Any:
     return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), tbl_assc))
 
 
 def packedpart(fnct: Callable) -> Callable:
-    def fnct_packed(to_be_unpacked: Sequence | Mapping | Iterable) -> Any:
+    def fnct_packed(to_be_unpacked: Iterable | Mapping) -> Any:
         return apply_packed_filtered(fnct, to_be_unpacked)
+
+    return fnct_packed
+
+
+def packedmappingpart(fnct: Callable) -> Callable:
+    def fnct_packed(tbl_assc: Mapping) -> Any:
+        return fnct(**keyfilter(crr(contains)(signature(fnct).parameters.keys()), tbl_assc))
 
     return fnct_packed
 
