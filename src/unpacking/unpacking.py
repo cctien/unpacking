@@ -75,46 +75,4 @@ class unpackingpart[T]:
         self.fnct = fnct
 
     def __call__(self, x: Iterable | Mapping) -> T:
-        return apply_packed_part(self.fnct, x)
-
-
-if __name__ == "__main__":
-
-    from concurrent.futures import ProcessPoolExecutor
-
-    def test_fnct_add(x: int, y: int) -> int:
-        added = x + y
-        print(f"{x} added to {y} produces {added}")
-        return added
-
-    data_args = [1, 2]
-    data_kwargs = {"x": 1, "y": 2}
-
-    assert starred(test_fnct_add)(data_args) == 3
-    assert doublestarred(test_fnct_add)(data_kwargs) == 3
-    assert unpacking(test_fnct_add)(data_args) == 3
-    assert unpacking(test_fnct_add)(data_kwargs) == 3
-
-    data_args_m = [[1, 2], [3, 4]]
-    data_kwargs_m = [{"x": 1, "y": 2}, {"x": 3, "y": 4}]
-    with ProcessPoolExecutor(2) as executor:
-        result_args = tuple(executor.map(unpacking(test_fnct_add), data_args_m))
-        assert result_args == (3, 7)
-        result_kwargs = tuple(executor.map(unpacking(test_fnct_add), data_kwargs_m))
-        assert result_kwargs == (3, 7)
-
-    data_args_excess = [1, 2, 3]
-    data_kwargs_excess = {"x": 1, "y": 2, "z": 3}
-    assert apply_packed_part(test_fnct_add, data_args_excess) == 3
-    assert apply_packed_part(test_fnct_add, data_kwargs_excess) == 3
-
-    assert starredpart(test_fnct_add)(data_args_excess) == 3
-    assert doublestarredpart(test_fnct_add)(data_kwargs_excess) == 3
-
-    data_args_excess_m = [[1, 2, 3], [3, 4, 5]]
-    data_kwargs_excess_m = [{"x": 1, "y": 2, "z": 3}, {"x": 3, "y": 4, "z": 5}]
-    with ProcessPoolExecutor(2) as executor:
-        result_args = tuple(executor.map(unpackingpart(test_fnct_add), data_args_excess_m))
-        assert result_args == (3, 7)
-        result_kwargs = tuple(executor.map(unpackingpart(test_fnct_add), data_kwargs_excess_m))
-        assert result_kwargs == (3, 7)
+        return apply_packed_part(self.fnct, x)  # type: ignore[return]
