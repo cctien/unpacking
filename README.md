@@ -1,8 +1,7 @@
 # unpacking
 
-![PyPI](https://img.shields.io/pypi/v/unpacking)
-![License](https://img.shields.io/github/license/cctien/unpacking)
-![Python Version](https://img.shields.io/pypi/pyversions/unpacking)
+[![PyPI](https://img.shields.io/pypi/v/unpacking)](https://pypi.org/project/unpacking/)
+[![License](https://img.shields.io/github/license/cctien/unpacking)](./LICENSE)
 
 Unpacking, spreading, or splatting positional arguments and keyword arguments in Python.
 
