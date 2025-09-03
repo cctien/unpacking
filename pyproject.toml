@@ -1,6 +1,6 @@
 [project]
 name = "unpacking"
-version = "1!0.1.1"
+version = "1!0.1.2"
 description = "Unpacking, spreading, or splatting positional arguments and keyword arguments in Python"
 keywords = ["unpack", "unpacking", "spread", "spreading", "splat", "splatting"]
 readme = "README.md"
