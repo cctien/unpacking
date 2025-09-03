@@ -7,5 +7,10 @@ from .unpacking import (
     unpackingpart,
 )
 
+star = starred
+dblstar = doublestarred
 unpk = unpacking
-unpkprt = unpackingpart
+
+starpr = starredpart
+dblstarpr = doublestarredpart
+unpkpr = unpackingpart
