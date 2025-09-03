@@ -41,6 +41,8 @@ class TestUnpacking(unittest.TestCase):
         kwargs_excess = {"x": 1, "y": 2, "z": 3}
         self.assertEqual(starredpart(add)(args_excess), 3)
         self.assertEqual(doublestarredpart(add)(kwargs_excess), 3)
+        self.assertEqual(unpackingpart(add)(args_excess), 3)
+        self.assertEqual(unpackingpart(add)(kwargs_excess), 3)
         args_excess_m = [[1, 2, 3], [3, 4, 5]]
         kwargs_excess_m = [{"x": 1, "y": 2, "z": 3}, {"x": 3, "y": 4, "z": 5}]
         with ProcessPoolExecutor(2) as executor:
